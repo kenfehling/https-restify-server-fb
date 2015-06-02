@@ -1,0 +1,11 @@
+{
+  "globalstrict": true,
+  "node": true,
+  "globals": {
+    "require": true,
+    "console": true,
+    "module": true,
+    "__dirname": true
+  }
+}
+
