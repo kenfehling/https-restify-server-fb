@@ -3,31 +3,72 @@
 var _ = require('lodash');
 var restify = require('restify');
 var FB = require('fb');
-//var https = require('restify-https');
 var path = require('path');
 var fs = require('fs');
+var db = require('./services/database');
 
 var server = restify.createServer();
 server.use(restify.CORS());
 server.use(restify.fullResponse());
 //server.use(restify.gzipResponse());
 server.use(restify.bodyParser());
-//server.use(https({ override: false }));
+
+db.connect('mongodb://localhost/react-gulp-try');
+loadInLocations();
 
 /**
  * Create user
  */
 server.post('/user', function(req, res) {
-  var accessToken = req.params.accessToken;
-  FB.setAccessToken(accessToken);
-  FB.api("me", function(fbRes) {
-    FB.api("10101177566993264/invitable_friends", function(fbRes) {
-        var user = _.extend({ level:1 }, fbRes);
+    var accessToken = req.params.accessToken;
+    FB.setAccessToken(accessToken);
+    FB.api("me", function(fbRes) {
+    var user = _.extend({ level:1 }, fbRes);
         res.send(201, user);
     });
-  });
+});
+
+server.get('/locations', function(req, res) {
+    db.models.Location.find(function(err, locations) {
+        res.send(locations);
+    });
+});
+
+server.get('/favorites', function(req, res) {
+    db.models.Favorite.find(function(err, favorite) {
+        res.send(favorite);
+    });
+});
+
+server.post('/favorites', function(req, res) {
+    var favorite = new db.models.Favorite();
+    favorite.save(function(err, favorite) {
+        if (err) {
+            res.send(500, err.toString());
+        }
+        else {
+            res.send(201, favorite);
+        }
+    });
 });
 
 var port = process.env.PORT || 9000;
 console.log("Listening on port " + port);
 server.listen(port);
+
+function loadInLocations() {
+    db.models.Location.findById(0, function (err, alreadySavedLocation) {
+        if (!alreadySavedLocation) {
+            var locations = require('./locations').map(function(loc) {
+                return new db.models.Location({ _id: loc.id, name: loc.name });
+            });
+            locations.forEach(function(loc) {
+                loc.save(function(err) {
+                    if (err) {
+                        console.error(err.toString());
+                    }
+                });
+            });
+        }
+    });
+}
