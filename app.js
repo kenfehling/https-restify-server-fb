@@ -35,19 +35,38 @@ server.get('/locations', function(req, res) {
 });
 
 server.get('/favorites', function(req, res) {
-    db.models.Favorite.find(function(err, favorite) {
-        res.send(favorite);
+    db.models.Favorite.find(function(err, favorites) {
+        console.log(favorites);
+        res.send(favorites);
     });
 });
 
 server.post('/favorites', function(req, res) {
-    var favorite = new db.models.Favorite();
-    favorite.save(function(err, favorite) {
-        if (err) {
-            res.send(500, err.toString());
+    var id = req.params.id;
+    db.models.Location.findById(id, function(err, location) {
+        if (location) {
+            location.has_favorite = true;
+            location.save(function(err, favorite) {
+                if (err) {
+                    res.send(500, err.toString());
+                }
+                else {
+                    res.send(201, favorite);
+                }
+            });
+            var favorite = new db.models.Favorite();
+            favorite.location = id;
+            favorite.save(function(err, favorite) {
+                if (err) {
+                    res.send(500, err.toString());
+                }
+                else {
+                    res.send(201, favorite);
+                }
+            });
         }
-        else {
-            res.send(201, favorite);
+        else if (err) {
+            res.send(500, err.toString());
         }
     });
 });
@@ -57,10 +76,10 @@ console.log("Listening on port " + port);
 server.listen(port);
 
 function loadInLocations() {
-    db.models.Location.findById(0, function (err, alreadySavedLocation) {
-        if (!alreadySavedLocation) {
+    db.models.Location(function (err, alreadySavedLocations) {
+        if (!alreadySavedLocations) {
             var locations = require('./locations').map(function(loc) {
-                return new db.models.Location({ _id: loc.id, name: loc.name });
+                return new db.models.Location({_id: loc.id, name: loc.name });
             });
             locations.forEach(function(loc) {
                 loc.save(function(err) {

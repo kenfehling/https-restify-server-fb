@@ -19,6 +19,11 @@ var locationSchema = new Schema({
         type: String,
         required: true,
         unique: true
+    },
+    has_favorite: {
+        type: Boolean,
+        required: true,
+        default: false
     }
 });
 
