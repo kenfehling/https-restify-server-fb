@@ -9,7 +9,7 @@ var gulp        = require('gulp'),
     source      = require('vinyl-source-stream');
 
 var paths = {
-    scripts: ['**/*.js'],
+    scripts: ['src/**/*.js'],
     tests: ['tests/**/*.js'],
     server_file: 'app.js',
     server_path: './',

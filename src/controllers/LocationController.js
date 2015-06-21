@@ -1,5 +1,5 @@
 import Location from '../models/Location';
-import locationUpdatedSignal from '../signals/LocationUpdatedSignal'
+import LocationUpdatedSignal from '../signals/LocationUpdatedSignal'
 
 const locationUpdatedSignal = LocationUpdatedSignal.instance;
 
