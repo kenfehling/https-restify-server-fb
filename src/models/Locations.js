@@ -1,14 +1,11 @@
 import _ from 'lodash';
+import { Singleton } from '../utils/model';
 
 let instance = null;
 
-// TODO: Memory-backed locations store.
-// TODO: Could this be swapped out with a database implementation?
-// TODO: On the client this would be fine to represent the model,
-// TODO: but with 100,000 users on the server it wouldn't be.
-
-// TODO: On the other hand, this could be populated with data from the database
-// TODO: when a particular request asking for this object is being serviced.
+// TODO: Memory-based store on the client (Singleton)
+// TODO: Temporarily populated on request on the server (not Singleton)
+@Singleton
 export default class Locations {
     constructor() {
         this.all = [];

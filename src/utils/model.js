@@ -13,3 +13,7 @@ export function mutateField(object:Object, field:String, value, callback:Functio
         callback ? callback({ success: false, error: error }) : null;
     }
 }
+
+export function Singleton(target, name, descriptor) {
+    console.log(target, name, descriptor);
+}

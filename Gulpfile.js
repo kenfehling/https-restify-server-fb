@@ -6,7 +6,8 @@ var gulp        = require('gulp'),
     del         = require('del'),
     plumber     = require('gulp-plumber'),
     runSequence = require('run-sequence'),
-    source      = require('vinyl-source-stream');
+    source      = require('vinyl-source-stream'),
+    jest        = require('jest-cli');
 
 var paths = {
     scripts: ['src/**/*.js'],
@@ -18,7 +19,9 @@ var paths = {
 
 gulp.task('babel', function() {
     return gulp.src(paths.scripts)
+        .pipe(sourcemaps.init())
         .pipe(babel({ stage: 0, optional: ["runtime"] }))
+        .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest(paths.build_path));
 });
 
@@ -46,5 +49,11 @@ gulp.task('default', function() {
 gulp.task('watch', ['default'], function () {
     gulp.watch(paths.scripts, function() {
         runSequence(['babel'], 'server:restart');
+    });
+});
+
+gulp.task('jest', ['babel'], function(done) {
+    return jest.runCLI({config : { rootDir: paths.build_path }}, ".", function() {
+        done();
     });
 });
