@@ -6,6 +6,8 @@ var FB = require('fb');
 var path = require('path');
 var fs = require('fs');
 var db = require('./services/database');
+var locations = require('./models/Locations').instance;
+var LocationController = require('./controllers/LocationController');
 
 var server = restify.createServer();
 server.use(restify.CORS());
@@ -13,8 +15,8 @@ server.use(restify.fullResponse());
 //server.use(restify.gzipResponse());
 server.use(restify.bodyParser());
 
-db.connect('mongodb://localhost/react-gulp-try');
-loadInLocations();
+//db.connect('mongodb://localhost/react-gulp-try');
+//loadInLocations();
 
 /**
  * Create user
@@ -28,6 +30,7 @@ server.post('/user', function(req, res) {
     });
 });
 
+/*
 server.get('/locations', function(req, res) {
     db.models.Location.find(function(err, locations) {
         res.send(locations);
@@ -40,9 +43,26 @@ server.get('/favorites', function(req, res) {
         res.send(favorites);
     });
 });
+*/
 
 server.post('/favorites', function(req, res) {
     var id = req.params.id;
+    var location = locations.findById(id);  // TODO: Keep it simple for now, no DB
+    if (location) {
+        LocationController.setLocationHasFavorite(location, true, function(result) {
+            if (result.success) {
+                res.send(200, location);
+            }
+            else if (error) {
+                res.send(500, error);
+            }
+            else {
+                res.send(204);
+            }
+        });
+    }
+
+    /*
     db.models.Location.findById(id, function(err, location) {
         if (location) {
             location.has_favorite = true;
@@ -69,12 +89,14 @@ server.post('/favorites', function(req, res) {
             res.send(500, err.toString());
         }
     });
+    */
 });
 
 var port = process.env.PORT || 9000;
 console.log("Listening on port " + port);
 server.listen(port);
 
+/*
 function loadInLocations() {
     db.models.Location(function (err, alreadySavedLocations) {
         if (!alreadySavedLocations) {
@@ -91,3 +113,4 @@ function loadInLocations() {
         }
     });
 }
+*/

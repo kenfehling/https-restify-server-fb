@@ -1,8 +1,8 @@
 "use strict";
 
 var mongoose = require('mongoose');
-var Location = require('../models/location');
-var Favorite = require('../models/favorite');
+var Location = require('../mongoose/location');
+var Favorite = require('../mongoose/favorite');
 
 function connect(url) {
     var connection = mongoose.connect(url);
