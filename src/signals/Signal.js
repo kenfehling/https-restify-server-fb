@@ -1,5 +1,3 @@
-let singleton = Symbol();
-
 export default class Signal {
     constructor() {
         this.listeners = [];
@@ -16,15 +14,4 @@ export default class Signal {
     remove(f) {
         // TODO: Implement
     }
-
-    /**
-     * @returns Singleton
-     */
-    static get instance() {
-        if (!this[singleton]) {
-            this[singleton] = new Signal();
-        }
-        return this[singleton];
-    }
-
 }

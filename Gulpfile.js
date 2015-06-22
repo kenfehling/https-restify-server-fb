@@ -7,7 +7,8 @@ var gulp        = require('gulp'),
     plumber     = require('gulp-plumber'),
     runSequence = require('run-sequence'),
     source      = require('vinyl-source-stream'),
-    jest        = require('jest-cli');
+    jest        = require('jest-cli'),
+    mocha       = require('gulp-mocha');
 
 var paths = {
     scripts: ['src/**/*.js'],
@@ -56,4 +57,13 @@ gulp.task('jest', ['babel'], function(done) {
     return jest.runCLI({config : { rootDir: paths.build_path }}, ".", function() {
         done();
     });
+});
+
+gulp.task('mocha', ['babel'], function() {
+    return gulp.src(paths.build_path + "__tests__/**/*.js")
+        .pipe(mocha());
+});
+
+gulp.task('mocha:watch', ['mocha'], function() {
+    gulp.watch(paths.scripts, ['mocha']);
 });

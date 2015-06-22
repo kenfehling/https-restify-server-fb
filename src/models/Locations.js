@@ -1,11 +1,5 @@
 import _ from 'lodash';
-import { Singleton } from '../utils/model';
 
-let instance = null;
-
-// TODO: Memory-based store on the client (Singleton)
-// TODO: Temporarily populated on request on the server (not Singleton)
-@Singleton
 export default class Locations {
     constructor() {
         this.all = [];
@@ -20,12 +14,5 @@ export default class Locations {
             console.log(location.id, id);
             return location.id === id;
         });
-    }
-
-    static get instance() {
-        if(!this[instance]) {
-            this[instance] = new Locations();
-        }
-        return this[instance];
     }
 }

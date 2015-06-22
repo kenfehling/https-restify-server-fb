@@ -1,7 +1,5 @@
 import Location from '../models/Location';
-import LocationUpdatedSignal from '../signals/LocationUpdatedSignal'
-
-const locationUpdatedSignal = LocationUpdatedSignal.instance;
+import { locationUpdatedSignal } from '../Singletons';
 
 function createCallback(location:Location, callback:Function) {
     return (result) => {
