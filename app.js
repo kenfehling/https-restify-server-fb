@@ -76,8 +76,8 @@ console.log("Listening on port " + port);
 server.listen(port);
 
 function loadInLocations() {
-    db.models.Location(function (err, alreadySavedLocations) {
-        if (!alreadySavedLocations) {
+    db.models.Location.find(function (err, alreadySavedLocations) {
+        if (!alreadySavedLocations || alreadySavedLocations.length === 0) {
             var locations = require('./locations').map(function(loc) {
                 return new db.models.Location({_id: loc.id, name: loc.name });
             });
