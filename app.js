@@ -13,7 +13,14 @@ server.use(restify.fullResponse());
 //server.use(restify.gzipResponse());
 server.use(restify.bodyParser());
 
-db.connect('mongodb://localhost/react-gulp-try');
+// Use different URL for development and production
+if (process.env.MONGOLAB_URI) {
+    db.connect(process.env.MONGOLAB_URI);
+}
+else {
+    db.connect('mongodb://localhost/react-gulp-try');
+}
+
 loadInLocations();
 
 /**
